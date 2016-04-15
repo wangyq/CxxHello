@@ -8,8 +8,8 @@ using namespace std;
 
 //call every module's start function here!
 BEGIN_FUNC_MAP()
-	FUNC_ITEM_IF(false,start_icpc2014)
-	FUNC_ITEM_IF(true,do_prime_test)
+	RUN_FUNC_IF(false,start_icpc2014)
+	RUN_FUNC_IF(true,do_prime_test)
 END_FUNC_MAP()
 
 
