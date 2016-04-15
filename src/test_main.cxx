@@ -4,10 +4,10 @@
 //call every module's start function here!
 BEGIN_FUNC_MAP()
 	RUN_FUNC_IF(false,test_gcd)
-	RUN_FUNC_IF(true,test_icpc2014)
-	RUN_FUNC_IF(true,test_const_ptr)
-	RUN_FUNC_IF(true,test_autoptr)
-	RUN_FUNC_IF(true,test_vfork)
+	RUN_FUNC_IF(false,test_icpc2014)
+	RUN_FUNC_IF(false,test_const_ptr)
+	RUN_FUNC_IF(false,test_autoptr)
+	RUN_FUNC_IF(false,test_vfork)
 END_FUNC_MAP()
 
 
