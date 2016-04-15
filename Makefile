@@ -1,7 +1,7 @@
 #================================================
 # User define parameter
 #
-PROGRAM = hello
+PROGRAM = CxxHello
 CC = g++
 LINK = g++
 CFLAGS = -Wall 
@@ -114,7 +114,7 @@ help:
 	@echo "		make cleanall --  make clean all ,clean everything!"
 	@echo "Test:"
 	@echo "		make test     --  make  test target!"
-	@echo "		make runtest  --  make test target and run it!"
+	@echo "		make testrun  --  make test target and run it!"
 	@echo "		make help     --  this help!"
 	@echo " "
 	@echo " "
@@ -130,7 +130,7 @@ $(BUILD_DIR)/$(target): $(OUTPUT_DIR)/$(MAIN_FILE).o $(OUTPUT_DEPS) $(OUTPUT_OBJ
     
 #compile source files into object files
 $(OUTPUT_DIR)/%.o: %.$(SRC_FILE_TYPE) 
-	$(CC) $(CFLAGS) $(INCLUDE_PATH) -I$(dir $<) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) -I $(dir $<) -c $< -o $@
 
 #src dir compiler
 $(OUTPUT_DIR)/%.o: $(SRC_DIR)/%.$(SRC_FILE_TYPE)
