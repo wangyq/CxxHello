@@ -295,6 +295,7 @@ int main_echoclient_stub(int argc, const char* argv[]) {
     } while (1);
 
     close(client_sockfd); // close socket.
+
     return 0;
 }
 
