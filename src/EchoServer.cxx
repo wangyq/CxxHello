@@ -11,7 +11,7 @@
 int main(int argc, const char* argv[])
 {
     extern int main_echoserver_stub(int argc, const char* argv[]);
-    return main_echoserver_stub(argc, argv);;
+    return main_echoserver_stub(argc, argv);
 }
 
 

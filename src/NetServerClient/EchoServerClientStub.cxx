@@ -15,11 +15,21 @@
 #include <sys/epoll.h>
 #include <fcntl.h>
 #include <time.h>
+#include <signal.h>
 
 //#include "TheTypeDefine.h"
 
 #define MAX_BUF     1024        /* Maximum bytes fetched by a single read() */
 #define MAX_EVENTS     5        /* Maximum number of events to be returned from a single epoll_wait() call */
+
+//global variable of server socket.
+int server_sockfd = 0;
+
+struct echo_buf{
+    int fd;
+    char r_buf[MAX_BUF+1];
+    char w_buf[MAX_BUF+1];
+};
 
 /**
  *
@@ -79,10 +89,22 @@ int handle_accept(int fd, int epfd) {
             printf("Connection of client %s:%d accepted.\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
             setnonblocking(newsock); //set non-blocking
-            ev.data.fd = newsock;
+
+            struct echo_buf* pEcho = (struct echo_buf*)malloc(sizeof(struct echo_buf));
+            if( pEcho == NULL ){
+                perror("malloc of struct echo_buf ");
+                close(newsock);
+                return -1;
+            }
+
+            //ev.data.fd = newsock;
+            pEcho->fd = newsock;
+            ev.data.ptr = pEcho;
             ev.events = EPOLLIN | EPOLLET; //edge-trigger
             if (-1 == epoll_ctl(epfd, EPOLL_CTL_ADD, newsock, &ev)) {
                 perror("epoll_ctl");
+                free(ev.data.ptr); //free memory!
+                close(newsock);
                 return -1;
             }
         }
@@ -94,15 +116,18 @@ int handle_accept(int fd, int epfd) {
 int handle_read(int fd, int epfd) {
     int beClosed = 0;
     struct epoll_event ev;
+    struct echo_buf* pEcho = (struct echo_buf*)fd;
     do {
-        char buf[MAX_BUF + 1] = { 0 };
+        //char buf[MAX_BUF + 1] = { 0 };
         int count = 0;
-        count = recv(fd, buf, MAX_BUF, 0);
+        count = recv(pEcho->fd, pEcho->r_buf, MAX_BUF, 0);
         if (-1 == count) { //no more recv operation.
             if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) { // no more data available
-                ev.data.fd = fd;
+                strcpy(pEcho->w_buf,pEcho->r_buf); //copy data to write_buffer.
+                //ev.data.fd = fd;
+                ev.data.ptr = pEcho;
                 ev.events = EPOLLOUT | EPOLLET; //edge-trigger
-                if (-1 == epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &ev)) {
+                if (-1 == epoll_ctl(epfd, EPOLL_CTL_MOD, pEcho->fd, &ev)) {
                     perror("epoll_ctl EPOLL_CTL_MOD");
                     beClosed = 1;  //error and close it!
                 }
@@ -115,38 +140,41 @@ int handle_read(int fd, int epfd) {
             beClosed = 1;
             break;
         } else { // already get data now!
-            buf[count + 1] = '\0';
-            printf("Recieving from client %d: %s\n", fd, buf);
+            pEcho->r_buf[count] = '\0';
+            printf("Recieving from client %d: %s\n", fd, pEcho->r_buf);
         }
     } while (1);  //repeat read data!
 
     //finish this client connection.
     if (beClosed) {
-        printf("Connection on descriptor %d is closed.\n", fd);
-        close(fd);
+        printf("Connection on descriptor %d is closed.\n", pEcho->fd);
+        close(pEcho->fd);
+        free(pEcho); //free memory.
     }
     return 0;
 }
 
 int handle_write(int fd, int epfd) {
-
-    char buf[MAX_BUF + 1] = { 0 }, *pCur = buf;
+    struct echo_buf* pEcho = (struct echo_buf*)fd;
+    //char buf[MAX_BUF + 1] = { 0 }, *pCur = buf;
+    char* pCur = NULL;
     int ntotal = 0, count = 0;
     struct epoll_event ev;
     int beClosed = 0;
-    snprintf(buf, MAX_BUF, "Hello, client #%d.", fd);
-    ntotal = strlen(buf);
-    pCur = buf;
+    //snprintf(buf, MAX_BUF, "Hello, client #%d.", fd);
+    ntotal = strlen(pEcho->w_buf);
+    pCur = pEcho->w_buf;
     while (ntotal > 0) {  // more data to send!
-        count = send(fd, pCur, ntotal, 0);
+        count = send(pEcho->fd, pCur, ntotal, 0);
         if (count > 0) {
             ntotal -= count;
             pCur += count;
         } else if (count == -1) {
             if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
-                ev.data.fd = fd;
+                //ev.data.fd = fd;
+                ev.data.ptr = pEcho;
                 ev.events = EPOLLIN | EPOLLET; //edge-trigger
-                if (-1 == epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &ev)) {
+                if (-1 == epoll_ctl(epfd, EPOLL_CTL_MOD, pEcho->fd, &ev)) {
                     perror("epoll_ctl EPOLL_CTL_MOD of EPOLLIN");
                     beClosed = 1;  //error and close it!
                 }
@@ -158,9 +186,10 @@ int handle_write(int fd, int epfd) {
         }
 
         if (ntotal <= 0) {//no more data to send.
-            ev.data.fd = fd;
+            //ev.data.fd = fd;
+            ev.data.ptr = pEcho;
             ev.events = EPOLLIN | EPOLLET; //edge-trigger
-            if (-1 == epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &ev)) {
+            if (-1 == epoll_ctl(epfd, EPOLL_CTL_MOD, pEcho->fd, &ev)) {
                 perror("epoll_ctl EPOLL_CTL_MOD of EPOLLIN");
                 beClosed = 1;  //error and close it!
             }
@@ -168,10 +197,9 @@ int handle_write(int fd, int epfd) {
         }
     } //end of while
     if (beClosed) {
-        printf("Close connection of client %d . ", fd);
-        close(fd);
-    } else { //non-close. so add EPOOLIN
-
+        printf("Close connection of client %d . ", pEcho->fd);
+        close(pEcho->fd);
+        free(pEcho);
     }
     return 0;
 }
@@ -209,10 +237,15 @@ int main_echoclient_stub(int argc, const char* argv[]) {
         return -1;
     }
 
+    {//banner information.
+        printf("\n\t Echo Client program. \n");
+        printf("\n *** Enter 'exit' or 'quit' to finish this session. ***\n\n");
+    }
     {
         char strTime[MAX_BUF];
         getCurDateTime(strTime, sizeof(strTime) - 1);
-        printf("[%s] Connected to Server %s:%d Success.\n ", strTime, strServerIP, nPort);
+        printf("[%s] Connection to Server %s:%d Succeeded.\n.\n", strTime, strServerIP, nPort);
+        //printf("\n *** Enter 'exit' or 'quit' to finish this session. ***\n\n");
     }
 
     int linenum = 0;
@@ -240,6 +273,7 @@ int main_echoclient_stub(int argc, const char* argv[]) {
         if ((strcmp("exit", buf) == 0) || (strcmp("quit", buf) == 0)) {
             break;
         }
+        //printf("Begin send message: %s \n",buf);
         //send.
         if (-1 == send(client_sockfd, buf, strlen(buf), 0)) {
             printf("send failed.");
@@ -264,6 +298,30 @@ int main_echoclient_stub(int argc, const char* argv[]) {
     return 0;
 }
 
+static void signal_handler( int signo)
+{
+    if( server_sockfd != 0) {
+        close(server_sockfd); //close server_sockfd
+    }
+    exit(EXIT_SUCCESS); //exit now
+}
+
+static void init_signal_handle()
+{
+    if( signal(SIGINT, signal_handler) == SIG_ERR){
+        printf("Cannot handle SIGINT ! \n");
+        exit(EXIT_FAILURE);
+    }
+    if( signal(SIGTERM, signal_handler) == SIG_ERR){
+        printf("Cannot handle SIGTERM ! \n");
+        exit(EXIT_FAILURE);
+    }
+    if( signal(SIGQUIT, signal_handler) == SIG_ERR){
+           printf("Cannot handle SIGQUIT ! \n");
+           exit(EXIT_FAILURE);
+    }
+}
+
 /**
  *
  */
@@ -274,6 +332,7 @@ int main_echoserver_stub(int argc, const char* argv[]) {
 
     struct epoll_event ev;
     struct epoll_event evlist[MAX_EVENTS];
+    //struct echo_buf server_buf;
 
     if (argc < 2) {
         printf("Usage: %s [port] \n", argv[0]);
@@ -281,6 +340,9 @@ int main_echoserver_stub(int argc, const char* argv[]) {
 
         return -1;
     }
+    //=========
+    init_signal_handle();
+
     portnum = atoi(argv[1]);
     if (portnum <= 0 || portnum >= 65535) {
         printf("Port Number %s Error\n", argv[1]);
@@ -294,7 +356,7 @@ int main_echoserver_stub(int argc, const char* argv[]) {
     }
 
     ///定义sockfd
-    int server_sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    server_sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
     ///定义sockaddr_in
     struct sockaddr_in server_sockaddr;
@@ -328,7 +390,8 @@ int main_echoserver_stub(int argc, const char* argv[]) {
     {
         char strTime[MAX_BUF];
         getCurDateTime(strTime, sizeof(strTime) - 1);
-        printf("[%s] Server start at port %d now ......\n ", strTime, portnum);
+        printf("\n\t *** Echo Server program ***\n\n");
+        printf("[%s] Server start at port %d now ......\n", strTime, portnum);
     }
 
     /* The event loop 事件循环*/
@@ -367,7 +430,7 @@ int main_echoserver_stub(int argc, const char* argv[]) {
                 /* 发生了错误或者被挂断，或者没有数据可读
                  * An error has occured on this fd, or the socket is not ready for reading (why were we notified then?) */
 
-                printf("Connection of fd: %d closed. \n", evlist[i].data.fd);
+                printf("Connection of fd: %d closed. \n", evlist[i].data.fd); //Here is the server_sockfd?
                 if (close(evlist[i].data.fd) == -1) {
                     perror("close fd");
                     //exit(-1);  //

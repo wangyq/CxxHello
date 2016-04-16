@@ -15,7 +15,7 @@ LIBS := -lpthread -lm
 LIBPATH := -L/usr/lib 
 #LIBPATH := -L/usr/lib -L/usr/lib64
 
-INCLUDE_PATH := -I$(SRC_DIR)/include -I$(SRC_DIR)
+INCLUDE_PATH := -I $(SRC_DIR)/include -I $(SRC_DIR)
 
 #define main source file in which "main()" function exist!
 MAIN_FILE = main
@@ -115,6 +115,9 @@ help:
 	@echo "Test:"
 	@echo "		make test     --  make  test target!"
 	@echo "		make testrun  --  make test target and run it!"
+	@echo "		make EchoServer  --  make EchoServer !"
+	@echo "		make EchoClient  --  make EchoClient !"
+	@echo " "
 	@echo "		make help     --  this help!"
 	@echo " "
 	@echo " "
