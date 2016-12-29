@@ -15,7 +15,7 @@ LIBS := -lpthread -lm
 LIBPATH := -L/usr/lib 
 #LIBPATH := -L/usr/lib -L/usr/lib64
 
-INCLUDE_PATH := -I$(SRC_DIR)/include -I$(SRC_DIR)
+INCLUDE_PATH := -I $(SRC_DIR)/include -I $(SRC_DIR)
 
 #define main source file in which "main()" function exist!
 MAIN_FILE = main
@@ -23,7 +23,7 @@ MAIN_FILE = main
 
 # module define which act as subdirectory reside in "src" directory
 #SRC_MODULES = main conf ca comm pm utils ic reg timer 
-SRC_MODULES = main conf util timer snmp icpc2014 
+SRC_MODULES = main conf util timer snmp icpc2014 NetServerClient
 
 #==================================================
 # Optional User define parameter
@@ -115,6 +115,9 @@ help:
 	@echo "Test:"
 	@echo "		make test     --  make  test target!"
 	@echo "		make testrun  --  make test target and run it!"
+	@echo "		make EchoServer  --  make EchoServer !"
+	@echo "		make EchoClient  --  make EchoClient !"
+	@echo " "
 	@echo "		make help     --  this help!"
 	@echo " "
 	@echo " "
@@ -172,9 +175,18 @@ cleanall:clean
 snmp: $(OUTPUT_DIR)/snmp.o $(OUTPUT_DEPS) $(OUTPUT_OBJS)
 	$(LINK) $(LIB_PATH) $(OUTPUT_OBJS) $(CFLAGS) $< -o $(BUILD_DIR)/$@ $(LIBPATH) $(LIBS)
 
+.PHONY:EchoServer
+EchoServer: $(OUTPUT_DIR)/EchoServer.o $(OUTPUT_DEPS) $(OUTPUT_OBJS)
+	$(LINK) $(LIB_PATH) $(OUTPUT_OBJS) $(CFLAGS) $< -o $(BUILD_DIR)/$@ $(LIBPATH) $(LIBS)
+
+.PHONY:EchoClient
+EchoClient: $(OUTPUT_DIR)/EchoClient.o $(OUTPUT_DEPS) $(OUTPUT_OBJS)
+	$(LINK) $(LIB_PATH) $(OUTPUT_OBJS) $(CFLAGS) $< -o $(BUILD_DIR)/$@ $(LIBPATH) $(LIBS)
+	
 #.PHONY:test
 #test2: $(OUTPUT_DIR)/test2.o $(OUTPUT_DEPS) $(OUTPUT_OBJS)
 #	$(LINK) $(LIB_PATH) $(OUTPUT_OBJS) $(CFLAGS) $< -o $(BUILD_DIR)/$@ $(LIBPATH) $(LIBS)
+
 
 #.PHONY:test
 #test3: $(OUTPUT_DIR)/test3.o $(OUTPUT_DEPS) $(OUTPUT_OBJS)
