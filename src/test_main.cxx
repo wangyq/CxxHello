@@ -8,6 +8,7 @@ BEGIN_FUNC_MAP()
 	RUN_FUNC_IF(false,test_const_ptr)
 	RUN_FUNC_IF(false,test_autoptr)
 	RUN_FUNC_IF(false,test_vfork)
+	RUN_FUNC_IF(true,test_read)
 END_FUNC_MAP()
 
 
