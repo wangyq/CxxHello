@@ -9,7 +9,7 @@ using namespace std;
 //call every module's start function here!
 BEGIN_FUNC_MAP()
 	RUN_FUNC_IF(false,start_icpc2014)
-	RUN_FUNC_IF(true,do_prime_test)
+	RUN_FUNC_IF(false,do_prime_test)
 	RUN_FUNC_IF(true,start_jobinterview)
 END_FUNC_MAP()
 

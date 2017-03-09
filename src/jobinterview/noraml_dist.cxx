@@ -14,7 +14,7 @@
 double heartlove(double mu1,double sigma1, double mu2,double sigma2)
 {
     double value = 0.0f;
-    int hit=0, count=10000;
+    int hit=0, count=100000;
 
     std::random_device rd;
     std::mt19937 gen1(rd()), gen2(rd());
@@ -25,14 +25,18 @@ double heartlove(double mu1,double sigma1, double mu2,double sigma2)
     {
     	double x = XX(gen1);
     	double y = YY(gen2);
-    	if( x >=2.0 || x <=-2.0 ) continue;
-    	if( y >=2.0 || y < -1.0 ) continue;
+
+    	//if( x >=2.0 || x <=-2.0 ) continue;
+    	//if( y >=2.0 || y < -1.0 ) continue;
 
     	double f1 = x*x;
     	double f2 = f1 + y*y -1;
     	double f = f2*f2*f2 - f1*y*y*y;
 
-    	if( f > 0.0 ) hit ++;
+    	if( f > 0.0 ) continue;
+
+    	//now hit
+    	hit++;
     }
 
     value = double(hit)/count;
