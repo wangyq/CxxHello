@@ -52,7 +52,7 @@ int fac(int x) {
 }
 
 void test_autoptr() {
-	std::auto_ptr<int> a(new int(10));
+	std::unique_ptr<int> a(new int(10));
 	cout << *a << endl;
 }
 

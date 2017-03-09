@@ -116,7 +116,7 @@ int handle_accept(int fd, int epfd) {
 int handle_read(int fd, int epfd) {
     int beClosed = 0;
     struct epoll_event ev;
-    struct echo_buf* pEcho = (struct echo_buf*)fd;
+    struct echo_buf* pEcho = reinterpret_cast<struct echo_buf*>(fd);
     do {
         //char buf[MAX_BUF + 1] = { 0 };
         int count = 0;
@@ -155,7 +155,7 @@ int handle_read(int fd, int epfd) {
 }
 
 int handle_write(int fd, int epfd) {
-    struct echo_buf* pEcho = (struct echo_buf*)fd;
+    struct echo_buf* pEcho = reinterpret_cast<struct echo_buf*>(fd);
     //char buf[MAX_BUF + 1] = { 0 }, *pCur = buf;
     char* pCur = NULL;
     int ntotal = 0, count = 0;
