@@ -7,6 +7,8 @@
 #include <vector>
 #include <map>
 #include <queue>          // std::priority_queue
+#include <algorithm>    // std::sort
+#include <set>
 
 using namespace std;
 
@@ -37,20 +39,32 @@ class Solution {
 public:
     vector<pair<int, int>> getSkyline(vector<vector<int>>& buildings) {
 
-    	vector<pair<int, int>> skyline;
+    	vector<pair<int, int>> skyline, height;
 
-    	map<vector<int>, bool> bFinished;  //process finished!
-    	for(vector<vector<int> >::iterator ite=buildings.begin(); ite!=buildings.end();++ite)
-    	{
-    		bFinished[*ite] = false; //initail,
+    	for( auto& b : buildings){
+    		height.push_back({b[0], -b[2]});
+    		height.push_back({b[1], b[2]});
     	}
 
-    	//int height = 0; //height of scanline
+    	sort(height.begin(), height.end());
 
-    	//
-    	priority_queue<vector<int>> processing;
-    	priority_queue<vector<int>> back;
+    	multiset<int> m;
+    	m.insert(0);
 
+    	int start = 0;
+    	int cur = 0;
+
+    	for( auto& h : height){
+    		if( h.second<0 )  m.insert(-h.second);
+    		else m.erase(m.find(h.second));
+
+    		cur = *m.rbegin();
+
+    		if( start != cur ){
+    			skyline.push_back({h.first,cur});
+    			start = cur;
+    		}
+    	}
     	return skyline;
     }
 };
@@ -60,5 +74,10 @@ public:
  */
 void start_leecode_p218()
 {
+	Solution solution;
+
+	vector<vector<int>> buildings;
+
+	vector<pair<int, int>> skyline = solution.getSkyline(buildings);
 
 }
