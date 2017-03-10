@@ -23,7 +23,7 @@ MAIN_FILE = main
 
 # module define which act as subdirectory reside in "src" directory
 #SRC_MODULES = main conf ca comm pm utils ic reg timer 
-SRC_MODULES = main conf util timer snmp icpc2014 NetServerClient jobinterview
+SRC_MODULES = main conf util timer snmp icpc2014 NetServerClient jobinterview leecode
 
 #==================================================
 # Optional User define parameter
