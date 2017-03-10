@@ -76,8 +76,20 @@ void start_leecode_p218()
 {
 	Solution solution;
 
+	int input[3][3] = {{1,2,1},{1,2,2},{1,2,3}};
+
+	vector<int> a1(input[0],input[1]), a2(input[1],input[2]), a3(input[2],input[3]);
+
 	vector<vector<int>> buildings;
+
+	buildings.push_back(a1);
+	buildings.push_back(a2);
+	buildings.push_back(a3);
 
 	vector<pair<int, int>> skyline = solution.getSkyline(buildings);
 
+	for(auto& p : skyline){
+		cout<< "["<<p.first<<" "<<p.second<<"] ";
+	}
+	cout<<endl;
 }
