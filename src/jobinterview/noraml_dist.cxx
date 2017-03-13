@@ -46,7 +46,7 @@ double heartlove(double mu1,double sigma1, double mu2,double sigma2)
 }
 
 
-void start_jobinterview(){
+void start_heartlove_proberbility(){
 	using namespace std;
 	double v = heartlove(0.0,1.0, 0.0,2.0);
 	cout <<v<<endl;

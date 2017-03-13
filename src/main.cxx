@@ -10,7 +10,7 @@ using namespace std;
 BEGIN_FUNC_MAP()
 	RUN_FUNC_IF(false,start_icpc2014)
 	RUN_FUNC_IF(false,do_prime_test)
-	RUN_FUNC_IF(false,start_jobinterview)
+	RUN_FUNC_IF(false,start_heartlove_proberbility)
 	RUN_FUNC_IF(true,start_leecode_p218)
 END_FUNC_MAP()
 
