@@ -5,6 +5,7 @@
 #include <random>
 #include <cmath>
 
+
 /* ====================================
  * heart curve : (x^2 + y^2 -1)^3  - x^2 * y^3 = 0
  *
@@ -42,5 +43,12 @@ double heartlove(double mu1,double sigma1, double mu2,double sigma2)
     value = double(hit)/count;
 
     return value;
+}
+
+
+void start_jobinterview(){
+	using namespace std;
+	double v = heartlove(0.0,1.0, 0.0,2.0);
+	cout <<v<<endl;
 }
 

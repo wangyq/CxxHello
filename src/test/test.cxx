@@ -14,7 +14,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-
+#include <vector>
+#include <algorithm>
 
 //#endif
 
@@ -103,3 +104,19 @@ void test_read(void){
 
 //#endif  //end of TEST_VFORK
 
+void test_vector_sort(){
+	int data[][2]  = {{1,2},{3,5},{3,4}};
+	vector<pair<int,int>> lines;
+
+	for( unsigned int i=0;i<sizeof(data)/sizeof(data[0]);i++){
+		lines.push_back({data[i][0],data[i][1]});
+	}
+
+	sort(lines.begin(),lines.end()); //sort
+
+	for( auto& v : lines){
+		cout<<"["<<v.first<<","<<v.second<<"] ";
+	}
+	cout<<endl;
+
+}
