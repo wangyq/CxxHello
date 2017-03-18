@@ -50,7 +50,7 @@ double heartlove(double mu1,double sigma1, double mu2,double sigma2)
 double Ovallove(double mu1,double sigma1, double mu2,double sigma2)
 {
     double value = 0.0f;
-    int hit=0, count=10000000;
+    int hit=0, count=1000000;
 
     std::random_device rd;
     std::mt19937 gen1(rd()), gen2(rd());
@@ -77,7 +77,7 @@ double Ovallove(double mu1,double sigma1, double mu2,double sigma2)
 }
 
 
-void start_heartlove_proberbility(){
+void start_heartlove_probability(){
 	using namespace std;
 	double v = heartlove(0.0,1.0, 0.0,2.0);
 	cout <<"heartlove: "<<v<<endl;
