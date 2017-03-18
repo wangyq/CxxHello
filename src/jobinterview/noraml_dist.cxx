@@ -44,11 +44,44 @@ double heartlove(double mu1,double sigma1, double mu2,double sigma2)
 
     return value;
 }
+/**
+ * (x^2 + y^2 -1)^2  - x^2 * y^2 = 0
+ */
+double Ovallove(double mu1,double sigma1, double mu2,double sigma2)
+{
+    double value = 0.0f;
+    int hit=0, count=10000000;
+
+    std::random_device rd;
+    std::mt19937 gen1(rd()), gen2(rd());
+
+    std::normal_distribution<> XX(mu1,sigma1), YY(mu2,sigma2); // normal variable of (X,Y)
+
+    for(int i=0;i<count;i++)
+    {
+    	double x = XX(gen1);
+    	double y = YY(gen2);
+
+    	double f1 = x*x + y*y -1;
+    	double f2 = x*y;
+
+    	if( f1 + f2  > 0.0 && f1 -f2 >0.0 ) continue;
+
+    	//now hit
+    	hit++;
+    }
+
+    value = double(hit)/count;
+
+    return value;
+}
 
 
 void start_heartlove_proberbility(){
 	using namespace std;
 	double v = heartlove(0.0,1.0, 0.0,2.0);
-	cout <<v<<endl;
+	cout <<"heartlove: "<<v<<endl;
+	cout<<"ovallove:" << Ovallove(0,1,0,1)<<endl;
+	cout<<"ovallove:" << Ovallove(2,2,2,2)<<endl;
 }
 
