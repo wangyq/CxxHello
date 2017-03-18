@@ -12,7 +12,8 @@ BEGIN_FUNC_MAP()
 	RUN_FUNC_IF(false,do_prime_test)
 	RUN_FUNC_IF(false,start_heartlove_proberbility)
 	RUN_FUNC_IF(false,start_leecode_p218)
-	RUN_FUNC_IF(true,start_linecover)
+	RUN_FUNC_IF(false,start_linecover)
+	RUN_FUNC_IF(true,start_leecode_p179_bignum)
 END_FUNC_MAP()
 
 
