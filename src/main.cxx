@@ -10,10 +10,11 @@ using namespace std;
 BEGIN_FUNC_MAP()
 	RUN_FUNC_IF(false,start_icpc2014)
 	RUN_FUNC_IF(false,do_prime_test)
-	RUN_FUNC_IF(true,start_heartlove_probability)
+	RUN_FUNC_IF(false,start_heartlove_probability)
 	RUN_FUNC_IF(false,start_leecode_p218)
 	RUN_FUNC_IF(false,start_linecover)
 	RUN_FUNC_IF(false,start_leecode_p179_bignum)
+	RUN_FUNC_IF(true,start_ali_bignum_ring_string)
 END_FUNC_MAP()
 
 
