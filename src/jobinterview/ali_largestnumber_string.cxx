@@ -107,10 +107,11 @@ public:
 void start_ali_bignum_ring_string()
 {
 	Solution so;
-	vector<int> nums = {1,2,3,4,5,6,7,8,9,0};
+	//vector<int> nums = {1,2,3,4,5,6,7,8,9,0};
 	//vector<int> nums = {9,101};
 	//vector<int> nums = {3,30,34,5,9};
 	//vector<int> nums = {123,494,878};
+	vector<int> nums = {123,494,878,719191913};
 	//vector<int> nums = {92,28,19};
 	//vector<int> nums = {193,245};
 	//vector<int> nums = {719191913};
