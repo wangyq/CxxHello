@@ -107,7 +107,11 @@ public:
 	 *
 	 */
 	string buildLargestNumber(vector<int> & nums){
-
+		struct ringstr_cmp{
+			bool operator()(const string & s1, const string & s2) const{
+				return (s1+s2) > (s2+s1);
+			}
+		};
 		vector<string> numstr;
 		for(auto& v: nums ){ //preprocessor for vector!
 			string s1 = std::to_string(v);
@@ -116,7 +120,7 @@ public:
 			if( s1 < s2 ) numstr.push_back(s2); //
 			else numstr.push_back(s1); //
 		}
-		sort(numstr.begin(),numstr.end(),std::greater<string>());// desc order
+		sort(numstr.begin(),numstr.end(),ringstr_cmp());// desc order
 //		if( numstr.size() == 1 ){ //only one number!
 //			return findmaxringnum(numstr[0]);
 //		}
@@ -141,7 +145,8 @@ public:
 void start_ali_bignum_ring_string()
 {
 	Solution so;
-	vector<int> nums = {1,2,3,4,5,6,7,8,9,0};
+	//vector<int> nums = {1,2,3,4,5,6,7,8,9,0};
+	vector<int> nums = {3,30,34,5,9};
 	//vector<int> nums = {123,494,878};
 	//vector<int> nums = {92,28,19};
 	//vector<int> nums = {719191913};
