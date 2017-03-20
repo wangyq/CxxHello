@@ -55,10 +55,10 @@ public:
     	int cur = 0;
 
     	for( auto& h : houses){
-    		if( h.second<0 )  m.insert(h.second);
+    		if( h.second<0 )  m.insert(h.second); //negative height.
     		else m.erase(m.find(-h.second));
 
-    		cur = -*m.begin();  //positive height!
+    		cur = -*m.begin();  //change to biggest positive height!
 
     		if( prev != cur ){
     			skyline.push_back({h.first,cur});
