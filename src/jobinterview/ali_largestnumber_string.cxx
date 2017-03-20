@@ -36,70 +36,33 @@ using namespace std;
 
 class Solution {
 public:
-
-	/**
-	 * no need now!
-	 * can call with findmaxringnum(s, "");
-	 */
-	string findmaxringnum(string s){
-
-		string rstr = s;
-		for(unsigned int i = 0;i<s.length();i++){//find largest ring num!
-				string smid;
-				if( i< s.length()-1) {
-					smid = s.substr(i+1, s.length()-i-1);
-				}
-				if( i>0 ){
-					smid += s.substr(0,i);
-				}
-				if( rstr.compare(s[i] + smid) <0 ){
-					rstr = s[i] + smid;
-				}
-				std::reverse(smid.begin(),smid.end());
-				if( rstr.compare(s[i] + smid) <0 ){
-					rstr = s[i] + smid;
-				}
-		}//end of for!
-		return rstr; //get the largest ring num!
-	}
-	string findmaxringnumfromstartchar(string s1, string s2){ //start from s1, can split
-		string rstr = "";
-		unsigned int i = 0;
-		for( i=1;i<s1.length() && i<=s2.length();i++){
-			if( s1[i] >= s2[i-1] ) continue;
-			else{
-				rstr = s1.substr(0, i);
-				rstr += s2;
-				rstr += s1.substr(i, s1.length() - i);
-				break;
-			}
-		}//end of for
-		if( rstr.length() == 0 ){
-			rstr = s1 + s2;
-		}
-		return rstr;//
-	}
 	string findmaxringnum(string s1, string s2){ //start from s1, can split
 		string rstr = "";
 		for(unsigned int i = 0; i<s1.length();i++){
-			string smid , tmp;
+			string smid, tmp;
+			smid += s1[i];
 			if( i< s1.length()-1) {
-				smid = s1.substr(i+1, s1.length()-i-1);
+				smid += s1.substr(i+1, s1.length()-i-1);
 			}
+			smid += s2;
 			if( i>0 ){
 				smid += s1.substr(0,i);
 			}
-			tmp = findmaxringnumfromstartchar(s1[i] + smid,s2);
-			if( rstr < tmp ) rstr = tmp;
-			std::reverse(smid.begin(),smid.end());
-			tmp = findmaxringnumfromstartchar(s1[i] + smid,s2);
-			if( rstr < tmp ) rstr = tmp;
+			if( rstr.compare(smid) < 0 ) rstr = smid;
 		}
 		return rstr; //
 	}
 	bool isRingFirst(string s1, string s2){ //compare who is the first!
 		string ms1 = findmaxringnum(s1,s2);
+		std::reverse(s1.begin(),s1.end());
+		string ms11 = findmaxringnum(s1,s2);
+		if( ms1 < ms11 ) ms1 = ms11;
+
 		string ms2 = findmaxringnum(s2,s1);
+		std::reverse(s2.begin(),s2.end());
+		string ms22 = findmaxringnum(s2,s1);
+		if( ms2 < ms22 ) ms2 = ms22;
+
 		if( ms1 < ms2 ) return false;
 		return true;
 	}
@@ -135,8 +98,10 @@ public:
 			if( rstr.compare(v) == 0 ) continue;
 			midstr += v;
 		}
-
-		return findmaxringnum(rstr,midstr);
+		string s1 = findmaxringnum(rstr,midstr);
+		std::reverse(rstr.begin(),rstr.end());
+		string s2 = findmaxringnum(rstr,midstr);
+		return s1 >= s2 ? s1:s2;
 	}
 
 
@@ -146,9 +111,11 @@ void start_ali_bignum_ring_string()
 {
 	Solution so;
 	//vector<int> nums = {1,2,3,4,5,6,7,8,9,0};
-	vector<int> nums = {3,30,34,5,9};
+	//vector<int> nums = {9,101};
+	//vector<int> nums = {3,30,34,5,9};
 	//vector<int> nums = {123,494,878};
 	//vector<int> nums = {92,28,19};
+	vector<int> nums = {193,245};
 	//vector<int> nums = {719191913};
 	cout<< so.buildLargestNumber(nums)<<endl;
 }
