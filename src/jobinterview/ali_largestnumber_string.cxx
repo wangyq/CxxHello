@@ -67,20 +67,17 @@ public:
 	 *
 	 */
 	string buildLargestNumber(vector<int> & nums){
-		struct ringstr_cmp{
-			bool operator()(const string & s1, const string & s2) const{
-				return (s1+s2) > (s2+s1);
-			}
-		};
+		// all 0...0
+		if (all_of(nums.begin(), nums.end(), [](int num){return num == 0;})) return "0";
+
 		vector<string> numstr;
 		for(auto& v: nums ){ //preprocessor for vector!
 			string s1 = std::to_string(v);
 			string s2 = string(s1.rbegin(),s1.rend());
 
-			if( s1 < s2 ) numstr.push_back(s2); //
-			else numstr.push_back(s1); //
+			numstr.push_back(s1>s2?s1:s2); //
 		}
-		sort(numstr.begin(),numstr.end(),ringstr_cmp());// desc order
+		sort(numstr.begin(),numstr.end(),[](const string& s1, const string& s2){ return s1+s2 > s2+s1;});// desc order
 //		if( numstr.size() == 1 ){ //only one number!
 //			return findmaxringnum(numstr[0]);
 //		}
