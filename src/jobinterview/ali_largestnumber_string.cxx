@@ -113,7 +113,7 @@ public:
 			else numstr.push_back(s1); //
 		}
 		sort(numstr.begin(),numstr.end(),std::greater<string>());// desc order
-		if( nums.size() == 1 ){ //only one number!
+		if( numstr.size() == 1 ){ //only one number!
 			return findmaxringnum(numstr[0]);
 		}
 
