@@ -29,29 +29,16 @@ using namespace std;
 class Solution {
 public:
 	string largestNumber(vector<int>& nums) {
-		struct bignum_cmp {
-			bool operator ()(const string & x, const string & y) const {
-				return (x + y) > (y + x);
-			}
-		};
 		//
+		if (all_of(nums.begin(), nums.end(), [](int num){return num == 0;})) return "0";
+
 		vector<string> snum;
 		for (auto& v : nums) {
 			snum.push_back(std::to_string(v));
 		}
-		sort(snum.begin(), snum.end(), bignum_cmp()); //
+		sort(snum.begin(), snum.end(), [](const string& s1, const string& s2){ return s1+s2 > s2+s1;}); //
 
-		string strnum = "";
-		for (auto & s : snum) {
-			strnum += s;
-		}
-		unsigned int i;
-		for (i = 0; i < strnum.length(); i++) {
-			if (strnum[i] != '0') break;
-		}
-		if (i >= strnum.length()) strnum = "0";
-		return strnum;
-
+		return accumulate(snum.begin(),snum.end(),string("")); //accumulate all string!
 	}
 	string largestNumber00(vector<int>& nums) {
 		struct bignum_cmp {
