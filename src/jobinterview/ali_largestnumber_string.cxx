@@ -37,6 +37,10 @@ using namespace std;
 class Solution {
 public:
 
+	/**
+	 * no need now!
+	 * can call with findmaxringnum(s, "");
+	 */
 	string findmaxringnum(string s){
 
 		string rstr = s;
@@ -113,16 +117,16 @@ public:
 			else numstr.push_back(s1); //
 		}
 		sort(numstr.begin(),numstr.end(),std::greater<string>());// desc order
-		if( numstr.size() == 1 ){ //only one number!
-			return findmaxringnum(numstr[0]);
-		}
+//		if( numstr.size() == 1 ){ //only one number!
+//			return findmaxringnum(numstr[0]);
+//		}
 
 		string rstr = "";
 		for(auto& v : numstr ){
 			if( isRingFirst(v, rstr) ) rstr = v; //find the first ring number!
 		}
 
-		string midstr;
+		string midstr = "";
 		for(auto& v : numstr){
 			if( rstr.compare(v) == 0 ) continue;
 			midstr += v;
@@ -137,7 +141,8 @@ public:
 void start_ali_bignum_ring_string()
 {
 	Solution so;
-	vector<int> nums = {123,494,878,719191913};
+	vector<int> nums = {1,2,3,4,5,6,7,8,9,0};
+	//vector<int> nums = {123,494,878};
 	//vector<int> nums = {92,28,19};
 	//vector<int> nums = {719191913};
 	cout<< so.buildLargestNumber(nums)<<endl;
