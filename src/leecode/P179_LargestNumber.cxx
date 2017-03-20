@@ -141,9 +141,9 @@ public:
 
 void start_leecode_p179_bignum() {
 	Solution so;
-	//vector<int> nums = { 3, 30, 34, 5,9 };
+	vector<int> nums = { 3, 30, 34, 5,9 };
 	//vector<int> nums = { 626, 62648, 6261, 6267, 6266 };
-	vector<int> nums = { 0, 0 }; //{ 1,2,3,4,5,6,7,8,9,0,0};
+	//vector<int> nums = { 0, 0 }; //{ 1,2,3,4,5,6,7,8,9,0,0};
 
 	string str = so.largestNumber(nums);
 

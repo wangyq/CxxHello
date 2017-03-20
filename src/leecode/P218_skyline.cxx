@@ -39,32 +39,32 @@ class Solution {
 public:
     vector<pair<int, int>> getSkyline(vector<vector<int>>& buildings) {
 
-    	vector<pair<int, int>> skyline, height;
+    	vector<pair<int, int> > skyline, houses;
 
     	for( auto& b : buildings){
-    		height.push_back({b[0], -b[2]});
-    		height.push_back({b[1], b[2]});
+    		houses.push_back({b[0], -b[2]});
+    		houses.push_back({b[1], b[2]});
     	}
 
-    	sort(height.begin(), height.end());
+    	sort(houses.begin(), houses.end()); //asc order,  if same location then heigher first.
 
-    	multiset<int> m;
-    	m.insert(0);
+    	multiset<int> m;  //little first, that is negative height.
+    	m.insert(0);  //no need to test whether empty()
 
-    	int start = 0;
+    	int prev = 0;
     	int cur = 0;
 
-    	for( auto& h : height){
-    		if( h.second<0 )  m.insert(-h.second);
-    		else m.erase(m.find(h.second));
+    	for( auto& h : houses){
+    		if( h.second<0 )  m.insert(h.second);
+    		else m.erase(m.find(-h.second));
 
-    		cur = *m.rbegin();
+    		cur = -*m.begin();  //positive height!
 
-    		if( start != cur ){
+    		if( prev != cur ){
     			skyline.push_back({h.first,cur});
-    			start = cur;
+    			prev = cur;
     		}
-    	}
+    	} //end of for
     	return skyline;
     }
 };
@@ -72,19 +72,20 @@ public:
 /**
  *
  */
-void start_leecode_p218()
+void start_leecode_p218_skyline()
 {
 	Solution solution;
 
-	int input[3][3] = {{1,2,1},{1,2,2},{1,2,3}};
+//	int input[3][3] = {{1,2,1},{1,2,2},{1,2,3}};
+	vector<vector<int> > buildings = {{1,2,1},{1,2,2},{1,2,3}};
 
-	vector<int> a1(input[0],input[1]), a2(input[1],input[2]), a3(input[2],input[3]);
-
-	vector<vector<int>> buildings;
-
-	buildings.push_back(a1);
-	buildings.push_back(a2);
-	buildings.push_back(a3);
+//	vector<int> a1(input[0],input[1]), a2(input[1],input[2]), a3(input[2],input[3]);
+//
+//	vector<vector<int>> buildings;
+//
+//	buildings.push_back(a1);
+//	buildings.push_back(a2);
+//	buildings.push_back(a3);
 
 	vector<pair<int, int>> skyline = solution.getSkyline(buildings);
 
