@@ -38,7 +38,7 @@ class Solution {
 public:
 	string findmaxringnum(string s1, string s2, string mstr){ //start from s1, can split
 		for(unsigned int i = 0; i<s1.length();i++){
-			string smid, tmp;
+			string smid="";
 			smid += s1[i];
 			if( i< s1.length()-1) {
 				smid += s1.substr(i+1, s1.length()-i-1);
@@ -51,18 +51,7 @@ public:
 		}
 		return mstr; //
 	}
-	bool isRingFirst(string s1, string s2){ //compare who is the first!
-		string ms1 = findmaxringnum(s1,s2,"");
-		std::reverse(s1.begin(),s1.end());
-		ms1 = findmaxringnum(s1,s2, ms1);
 
-		string ms2 = findmaxringnum(s2,s1, "");
-		std::reverse(s2.begin(),s2.end());
-		ms2 = findmaxringnum(s2,s1, ms2);
-
-		if( ms1 < ms2 ) return false;
-		return true;
-	}
 	/**
 	 *
 	 */
@@ -78,24 +67,20 @@ public:
 			numstr.push_back(s1>s2?s1:s2); //
 		}
 		sort(numstr.begin(),numstr.end(),[](const string& s1, const string& s2){ return s1+s2 > s2+s1;});// desc order
-//		if( numstr.size() == 1 ){ //only one number!
-//			return findmaxringnum(numstr[0]);
-//		}
 
-		string rstr = "";
-		for(auto& v : numstr ){
-			if( isRingFirst(v, rstr) ) rstr = v; //find the first ring number!
-		}
+		string mstr = accumulate(numstr.begin() , numstr.end() , string(""));
+		for(vector<string>::iterator ite = numstr.begin(); ite!=numstr.end(); ite++){
+			string s1 = *ite;
+			string s2 = string(s1.rbegin(),s1.rend());
+			string ss = "";
 
-		string midstr = "";
-		for(auto& v : numstr){
-			if( rstr.compare(v) == 0 ) continue;
-			midstr += v;
+			ss += accumulate(numstr.begin(),ite, string(""));
+			ss += accumulate(ite +1, numstr.end(), string(""));
+
+			mstr = findmaxringnum(s1, ss, mstr);
+			mstr = findmaxringnum(s2, ss, mstr);
 		}
-		string ss = findmaxringnum(rstr,midstr, "");
-		std::reverse(rstr.begin(),rstr.end());
-		ss = findmaxringnum(rstr,midstr, ss);
-		return ss;
+		return mstr;
 	}
 
 
@@ -109,7 +94,10 @@ void start_ali_bignum_ring_string()
 	//vector<int> nums = {3,30,34,5,9};
 	//vector<int> nums = {123,494,878};
 	//vector<int> nums = {123,494,878,719191913};
-	vector<int> nums = {92,19};
+	//vector<int> nums = {92,19};
+	//vector<int> nums = {81,8181};
+	vector<int> nums = {231,31,3};
+	//vector<int> nums = {91,92,9};
 	//vector<int> nums = {92,28,19};
 	//vector<int> nums = {193,245};
 	//vector<int> nums = {719191913};
